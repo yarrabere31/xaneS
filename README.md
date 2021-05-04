@@ -1,1 +1,1 @@
-# xaneS
+Bu dosya Adem Can#0001  Tarafından Hazırlanmıştır !   Çalıntı Deildir!

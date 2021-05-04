@@ -1,44 +1,57 @@
+const { Command } = require('discord.js-commando');
 const Discord = require('discord.js');
-var ayarlar = require('../ayarlar.json');
+const moment = require('moment');
+const { stripIndents } = require('common-tags');
+require('moment-duration-format');
 
-exports.run = (client, message) => {
-  
-/*var helpers = "";
-    for (var i = 0; i < ayarlar.helper.length; i++) {
-        var şuanki = client.users.get(ayarlar.helper[i]).tag;
-        if (i === 0) {
-            helpers += şuanki
-        }
-        else if (i === ayarlar.helper.length - 1) {
-            helpers += ", " + şuanki;
-        } else {
-            helpers += ", " + şuanki
-        }
-    }*/
-  
-        const embed = new Discord.RichEmbed()
-		.setColor("RANDOM")
-		.addField(`» Botun İsmi/Adı:`, `Rytvex`)
-		.addField(`» Botun Sahibi/Yapımcısı:`, `<@${ayarlar.sahip}>`)
-    .addField(`» Kodlamada Yardımcı Olanlar:`, `${ayarlar.yardimcilar.map(ayarlar => `<@${ayarlar}>`).join(", ")}`)
-    .addField(`» Botun Orjinal Prefixi/Ön-Eki:`, `${ayarlar.prefix}`)
-    .addField(`» Rytvex | Destek Sistemi Kurulumu:`, `1- **destek-kanalı** isminde bir metin/yazı kanalı oluşturunuz. \n2- **Destek Ekibi** isminde bir rol oluşturunuz. \n\nBunları yaptıysanız **destek-kanalı** ismindeki metin/yazı kanalına mesaj yazdığınızda otomatik olarak destek talebi açılacaktır. \nDestek Sistemi artık sunucunuzda aktiftir!`)
-		.addField(`» Botun Linkleri:`, `[Botu Sunucuna Eklemek İçin Tıkla!](https://discordapp.com/oauth2/authorize?client_id=479240699938734090&scope=bot&permissions=2146958847) \n[Botun Destek Sunucusuna Gelmek İçin Tıkla](https://discord.gg/E9ZBk6D)`)
-    .setFooter('© ' + (new Date()).getFullYear() + ' Rytvex')
-		.setThumbnail(client.user.avatarURL)
-        message.channel.send({embed});
+module.exports = class InfoCommand extends Command {
+	constructor(client) {
+		super(client, {
+			name: 'bilgi',
+			aliases: ['b', 'info', 'bot info', 'botinfo'],
+			group: 'bilgi',
+			memberName: 'bilgi',
+			description: 'Bot ile ilgili bilgi verir.',
+			guildOnly: false,
+			throttling: {
+				usages: 2,
+				duration: 3
+			}
+		});
+	}
+
+	async run(msg) {
+		var embed = {
+			color: 3447003,
+			description: `**Bilgi**`,
+			fields: [
+				{
+					name: '❯ Yapımcı',
+					value: client.users.get('211566381592739851').tag,
+					inline: false
+				},
+				{
+					name: '❯ Sürüm',
+					value: `${client.config.bot.version}`,
+					inline: false
+				},
+				{
+					name: '❯ Davet',
+					value: `https://discordapp.com/oauth2/authorize?client_id=288310817810546699&scope=bot&permissions=401812495`,
+					inline: false
+				},
+				{
+					name: '❯ Destek sunucusu',
+					value: `https://discord.gg/GvfuXmE`,
+					inline: false
+				},
+			],
+			footer: {
+			  icon_url: this.client.user.avatarURL,
+			  text: "© 2018 Sohbet ve Oyun"
+			},
+			thumbnail: { url: this.client.user.avatarURL }
+    };
+		return msg.channel.send({embed});
+	}
 };
-
-exports.conf = {
-    enabled: true,
-    guildOnly: false,
-    aliases: ['hakkında'],
-    permLevel: `Yetki gerekmiyor.`
-  };
-  
-  exports.help = {
-    name: 'bilgi',
-    category: 'bot',
-    description: 'Botun bilgisini gösterir.',
-    usage: 'r?bilgi'
-  };

@@ -1,33 +1,39 @@
-const Discord = require('discord.js');
+const commando = require('discord.js-commando');
 
-exports.run = (client, message, args) => {
-    
-    let user;
-	
-    if (message.mentions.users.first()) {
-      user = message.mentions.users.first();
-    } else {
-        user = message.author;
+module.exports = class EchoCommand extends commando.Command {
+    constructor(client) {
+        super(client, {
+            name: 'avatar',
+            aliases: ['pp', 'avatarbul'],
+            group: 'eglence',
+            memberName: 'avatar',
+            description: 'İstediğiniz kullanıcının avatarının linkini verir.',
+            guildOnly: true,
+            throttling: {
+                 usages: 1,
+                 duration: 10
+             },
+
+			args: [
+				{
+					key: 'member',
+					label: 'kullanıcı',
+					prompt: 'Kimin avatarının linkini istersin?',
+					type: 'member'
+				}
+			]
+        });
     }
-    
-    const avatar = new Discord.RichEmbed()
-        .setColor("RANDOM")
-        .setAuthor("» Buyur Avatarın,")
-        .setImage(user.avatarURL)
-    message.channel.sendEmbed(avatar)
-    
-};
 
-exports.conf = {
-  enabled: true, 
-  guildOnly: false, 
-  aliases: ["pp"],
-  permLevel: `Yetki gerekmiyor.` 
-};
-
-exports.help = {
-  name: 'avatar',
-  category: 'kullanıcı',
-  description: 'Belirtilen Kişinin veya Komutu Yazan Kişinin Avatarını Atar.',
-  usage: 'r?avatar <@kişi-etiket> veya r?avatar'
+    async run(msg, args) {
+      const member = args.member;
+  		const user = member.user;
+  		var embed = {
+  			color: 3447003,
+  			image: {
+  				url: user.avatarURL,
+  			}
+  		};
+  		msg.channel.send({embed});
+    }
 };

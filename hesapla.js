@@ -7,19 +7,18 @@ const stripIndents = require('common-tags').stripIndents
 exports.run = function(client, message, args) {
     var soru = args.join(' ');
     
-    if(!soru) return message.reply('Bir işlem belirtin. \n**Doğru Kullanım**: r?hesapla <işlem>')
-    else { 
-      let cevap;
+    if(!soru) return message.reply('Bir işlem belirtin. **Doğru Kullanım**: ?hesapla <işlem>')
+    else { let cevap;
         try {
             cevap = math.eval(soru)
         } catch(err) {
-            message.channel.send(`HATA: \n**${err ? err : "Bilinmiyor"}**`)
+            message.channel.send('Hatalı işlem: **' + err)
         }
 
         const embed = new Discord.RichEmbed()
-        .setColor("RANDOM")
-        .addField('» İşlem', soru ? soru : "İşlem Bulunamadı")
-        .addField('» Sonuç', cevap ? cevap : "Hesaplanamadı")
+        .addField('Soru', soru)
+        .addField('Cevap', cevap)
+
         message.channel.send(embed)
     }
 
@@ -29,13 +28,12 @@ exports.run = function(client, message, args) {
 exports.conf = {
   enabled: true, 
   guildOnly: true, 
-  aliases: ["matematik"],
-  permLevel: `Yetki gerekmiyor.` 
+  aliases: [],
+  permLevel: 0 
 };
 
 exports.help = {
-  name: 'hesapla',
-  category: "kullanıcı",
+  name: 'hesapla', 
   description: 'Belirtilen işlemi yapar.',
-  usage: 'r?hesapla <işlem>'
+  usage: 'hesapla <işlem>'
 };

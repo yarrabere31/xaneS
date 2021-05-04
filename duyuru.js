@@ -3,11 +3,11 @@ const commando = require('discord.js-commando');
 module.exports = class UtilAnnounceCommand extends commando.Command {
     constructor(client) {
         super(client, {
-            name: 'oylama',
-            aliases: ['voting', 'oy', 'oylamayap', 'oyla', 'oylamaolustur', 'oylamaoluştur'],
+            name: 'duyuru',
+            aliases: ['annouce', 'duyru', 'duyuruyap', 'anons', 'anonsyap'],
             group: 'util',
-            memberName: 'oylama',
-            description: 'Sunucunuzda oylama yapmanızı sağlar.',
+            memberName: 'duyuru',
+            description: 'Sunucunuzda duyuru yapmanızı sağlar.',
             guildOnly: true,
             throttling: {
                  usages: 2,
@@ -17,23 +17,23 @@ module.exports = class UtilAnnounceCommand extends commando.Command {
             args: [
                 {
                     key: 'dbaslik',
-                    label: 'oylama başlığı',
-                    prompt: 'Oylama başlığını yazar mısınız?',
+                    label: 'duyuru başlığı',
+                    prompt: 'Duyuru başlığını yazar mısınız?',
                     type: 'string',
                     min: 1,
                     max: 50
                 },
                 {
                     key: 'dmesaj',
-                    label: 'oylama mesajı',
-                    prompt: 'Oylama mesajını yazar mısınız?',
+                    label: 'duyuru mesajı',
+                    prompt: 'Duyuru mesajını yazar mısınız?',
                     type: 'string',
                     min: 1,
                     max: 1000
                 },
 				{
 					key: 'kanal',
-					prompt: 'oylama hangi kanala gönderilsin? (#kanalismi şeklinde yazınız)',
+					prompt: 'duyuru hangi kanala gönderilsin? (#kanalismi şeklinde yazınız)\n',
 					type: 'channel',
 				}
             ]
@@ -52,16 +52,14 @@ module.exports = class UtilAnnounceCommand extends commando.Command {
             description: `${args.dmesaj}`,
 			timestamp: new Date(),
 			footer: {
-				text: `Sohbet ve Oyun | Oylama`,
+				text: `Sohbet ve Oyun | Duyuru`,
 				icon_url: this.client.user.avatarURL
 			},
             thumbnail: {
                 url: msg.author.avatarURL || msg.client.user.avatarURL
   		    }
         };
-        msg.guild.channels.get(args.kanal.id).send({embed}).then(msg => {
-            msg.react("345665544579448835").then(() => msg.react("345665571829972992"));
-        })
-        msg.channel.send(client.config.customEmojis.basarili + ' Oylama başarılı bir şekilde gönderildi.');
+        msg.guild.channels.get(args.kanal.id).send({embed});
+        msg.channel.send(client.config.customEmojis.basarili + ' Duyuru başarılı bir şekilde gönderildi.');
     };
 };

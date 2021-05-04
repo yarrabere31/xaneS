@@ -1,29 +1,44 @@
-const Discord = require('discord.js');
-const Jimp = require('jimp');
+const { Command } = require('discord.js-commando');
+const { createCanvas, loadImage } = require('canvas');
+const snekfetch = require('snekfetch');
 
-exports.run = (client, message, params) => {
-  
-  let user = message.mentions.users.first() || message.author
-  
-      Jimp.read(user.avatarURL, function (err, image){
-          image.resize(295, 295)
-          if(err) return message.channel.send('Bir hata oluştu: ``'+err+'``\n Lütfen yapımcıya bildirin.');
-          image.pixelate(10, 10, 10).write('./x/pixel.png');
-          setTimeout(() => {
-            message.channel.send({file: './x/pixel.png'});
-          }, 500);
-      });
-};
+module.exports = class PixelizeCommand extends Command {
+	constructor(client) {
+		super(client, {
+			name: 'pixel',
+			group: 'eglence',
+			memberName: 'pixel',
+			description: 'Avatarınızı pixelleştirir.',
+			throttling: {
+				usages: 1,
+				duration: 10
+			},
 
-exports.conf = {
-  enabled: true,
-  guildOnly: false,
-  aliases: ["invert"],
-  permLevel: 0
-};
+			args: [
+				{
+					key: 'user',
+					prompt: 'Which user would you like to edit the avatar of?',
+					type: 'user',
+					default: 'member'
+				}
+			]
+		});
+	}
 
-exports.help = {
-  name: 'pixel',
-  description: 'Avatarınızı pixelleştirir.',
-  usage: 'pixel ve pixel <@kullanıcı>'
+	async run(msg, { user }) {
+        let avatarURL;
+        if (user === 'member') avatarURL = msg.author.avatarURL;
+        else avatarURL = user.avatarURL;
+		try {
+			const { body } = await snekfetch.get(avatarURL);
+			const avatar = await loadImage(body);
+			const canvas = createCanvas(512, 512);
+			const ctx = canvas.getContext('2d');
+			ctx.imageSmoothingEnabled = false;
+			ctx.drawImage(avatar, 0, 0, 512, 512);
+			return msg.say({ files: [{ attachment: canvas.toBuffer(), name: 'pixel.png' }] });
+		} catch (err) {
+			return msg.reply(`Bir hata oluştu: \`${err.message}\`. Daha sonra tekrar dene!`);
+		}
+	}
 };
